@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="main.js"></script>
+  <title>Fancy To-Do List</title>
+</head>
+<body>
+    <div id="app">
+        <div class="container">
+          <h1 class="text-center">To-Do List</h1>
+          <form @submit.prevent="addTask">
+            <div class="form-group">
+              <label for="description">Task Description</label>
+              <input type="text" class="form-control" id="description" v-model="newTask.description">
+            </div>
+            <div class="form-group">
+              <label for="priority">Priority</label>
+              <select class="form-control" id="priority" v-model="newTask.priority">
+                <option value="">Select</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Task</button>
+          </form>
+          <br>
+          <div class="form-group">
+            <label for="filter">Filter</label>
+            <select class="form-control" id="filter" v-model="filter">
+              <option value="all">All</option>
+              <option value="active">Active</option>
+              <option value="completed">Completed</option>
+            </select>
+            <button v-if="hasCompleted" class="btn btn-danger" @click="deleteCompleted">Delete Completed</button>
+          </div>
+          <br>
+          <div v-if="tasks.length === 0">
+            <p>No tasks to show.</p>
+          </div>
+          <div v-else>
+            <p>{{ completedTasks }} out of {{ tasks.length }} tasks completed.</p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th>Priority</th>
+                  <th>Creation Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(task, index) in filteredTasks" :key="task.id">
+                  <td v-if="task.completed" class="completed">{{ task.description }}</td>
+                  <td v-else>{{ task.description }}</td>
+                  <td>
+                    <button class="btn btn-priority" :class="{ 'btn-high': task.priority === 'high', 'btn-medium': task.priority === 'medium', 'btn-low': task.priority === 'low' }" @click="changePriority(index, task.priority)">{{ task.priority }}</button>
+                  </td>
+                  <td>{{ task.date }} Creado hace: {{ task.elapsedTime }}</td>
+                  <td>
+                    <button class="btn btn-danger" @click="deleteTask(index)">Delete</button>
+                    <button class="btn btn-success" @click="changeStatus(index)">Complete</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>      
+</body>
+</html>
